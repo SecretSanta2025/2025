@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🎁 Secret Santa Generator 2025</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Quicksand', sans-serif;
+      padding: 20px;
+      background-color: #fffafc;
+      color: #333;
+    }
+
+    h1 {
+      color: #d6336c;
+      text-align: center;
+    }
+
+    .rules-box {
+      background-color: rgba(255, 240, 245, 0.9);
+      padding: 20px;
+      border-radius: 15px;
+      border: 2px solid #f3c2d3;
+      max-width: 800px;
+      margin: 0 auto 20px;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .rules-box h2 {
+      margin-top: 0;
+      color: #d6336c;
+    }
+
+    .rules-box ul {
+      margin: 0;
+      padding-left: 1.2em;
+      list-style-position: inside;
+    }
+
+    .rules-box li {
+      margin-bottom: 8px;
+    }
+
+    #language-buttons {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    #language-buttons button {
+      margin: 0 5px;
+      padding: 6px 12px;
+      font-weight: bold;
+      border-radius: 8px;
+      border: 1px solid #d6336c;
+      background-color: #fff0f5;
+      cursor: pointer;
+    }
+
+    #nameList {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 20px;
+      justify-content: center;
+    }
+
+    .name {
+      cursor: pointer;
+      padding: 12px 20px;
+      border: 2px solid #f3c2d3;
+      border-radius: 25px;
+      background-color: #fff0f5;
+      font-size: 1.1em;
+      font-weight: 600;
+      transition: background-color 0.3s, transform 0.2s;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+      flex: 1 1 calc(25% - 10px);
+      text-align: center;
+    }
+
+    .name:hover {
+      background-color: #ffe4ec;
+      transform: scale(1.03);
+    }
+
+    .name.clicked {
+      background-color: #f0f0f0;
+      cursor: default;
+      color: #999;
+      transform: none;
+    }
+
+    @media (max-width: 600px) {
+      .name {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>🎄 Secret Santa Generator 2025 🎅</h1>
+
+  <div class="rules-box">
+    <h2>🎁 Secret Santa Rules</h2>
+
+    <div id="language-buttons">
+      <button onclick="setLanguage('en')">🇬🇧 English</button>
+      <button onclick="setLanguage('nl')">🇳🇱 Dutch</button>
+      <button onclick="setLanguage('zh')">中文</button>
+    </div>
+
+    <div id="rules-en">
+      <ul>
+        <li>🎁 Each person must buy a gift for their assigned giftee.</li>
+        <li>💸 Budget: <strong>10 € per person</strong>.</li>
+        <li>🗞️ Gifts must be <strong>wrapped in newspaper/ad papers</strong>.</li>
+        <li>🚫 No gift = <strong>50 € penalty</strong> (to be paid to the person you are meant to buy the gift for).</li>
+        <li>🤫 Keep the name to yourself! No bragging, I am looking at you, <strong>Daniel & Johan</strong>.</li>
+        <li>👆 <strong>Click on your name below</strong> (can only click once) and the name of the person you are to purchase the gift for will show up for <strong>5 seconds</strong> — so make sure no one is watching!</li>
+      </ul>
+    </div>
+
+    <div id="rules-nl" style="display: none;">
+      <ul>
+        <li>🎁 Iedereen koopt een cadeautje voor de persoon die aan hen is toegewezen.</li>
+        <li>💸 Budget: <strong>10 € per persoon</strong>.</li>
+        <li>🗞️ Cadeautjes moeten <strong>in krantenpapier of reclamefolders</strong> worden ingepakt.</li>
+        <li>🚫 Geen cadeau = <strong>50 € boete</strong> (te betalen aan degene voor wie je het cadeau had moeten kopen).</li>
+        <li>🤫 Houd de naam voor jezelf! Geen opscheppen — ik kijk naar jullie, <strong>Daniel & Johan</strong>.</li>
+        <li>👆 <strong>Klik hieronder op je naam</strong> (kan maar één keer) en de naam van degene voor wie je een cadeau moet kopen verschijnt <strong>5 seconden lang</strong> — zorg dat niemand meekijkt!</li>
+      </ul>
+    </div>
+
+    <div id="rules-zh" style="display: none;">
+      <ul>
+        <li>🎁 每人需為分配到的對象準備一份禮物。</li>
+        <li>💸 預算：<strong>每人 10 €</strong>。</li>
+        <li>🗞️ 禮物必須用<strong>報紙或廣告紙包裝</strong>。</li>
+        <li>🚫 沒有禮物 = <strong>罰款 50 €</strong>（支付給你應該送禮的人）。</li>
+        <li>🤫 保密！不要炫耀 — <strong>Daniel 和 Johan</strong>，我在看著你們。</li>
+        <li>👆 <strong>點擊下面你的名字</strong>（只能點一次），你要送禮的人名會顯示 <strong>5 秒</strong> — 確保沒人偷看！</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="nameList"></div>
+
+  <script>
+    function setLanguage(lang) {
+      document.getElementById("rules-en").style.display = lang === "en" ? "block" : "none";
+      document.getElementById("rules-nl").style.display = lang === "nl" ? "block" : "none";
+      document.getElementById("rules-zh").style.display = lang === "zh" ? "block" : "none";
+    }
+
+    const names = ["Opa", "Oma", "Aunt Nin", "Uncle Danny", "Auntie Powan", "Daniel", "Johan", "Chun", "Ashley", "Isabelle", "Mila", "Jaelynn",
+      "Chi Wai", "Winnie", "Aidan", "Liam", "Chi Yeun",
+      "Lam", "Alvin", "Calista", "Cason",
+      "Kit Yeng", "Stephen", "Cian", "Joah",
+      "Leo", "Kassie", "Yan"
+    ];
+
+    const groups = [
+      ["Chun", "Ashley", "Isabelle", "Mila", "Jaelynn"],
+      ["Chi Wai", "Winnie", "Aidan", "Liam"],
+      ["Lam", "Alvin", "Calista", "Cason"],
+      ["Kit Yeng", "Stephen", "Cian", "Joah"],
+      ["Leo", "Yan", "Kassie"]
+    ];
+
+    const exclusions = {};
+    groups.forEach(group => {
+      group.forEach(name => {
+        exclusions[name] = group.filter(n => n !== name);
+      });
+    });
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function generateAssignments(names, exclusions) {
+      let shuffled;
+      let attempts = 0;
+      const maxAttempts = 1000;
+
+      while (attempts < maxAttempts) {
+        shuffled = shuffle(names.slice());
+        const valid = names.every((giver, i) => {
+          const receiver = shuffled[i];
+          return giver !== receiver && !(exclusions[giver]?.includes(receiver));
+        });
+        if (valid) return Object.fromEntries(names.map((n, i) => [n, shuffled[i]]));
+        attempts++;
+      }
+      throw new Error("Unable to generate valid assignments with exclusions.");
+    }
+
+    let assignments = JSON.parse(localStorage.getItem("secretSantaAssignments"));
+    if (!assignments) {
+      assignments = generateAssignments(names, exclusions);
+      localStorage.setItem("secretSantaAssignments", JSON.stringify(assignments));
+    }
+
+    const clickedData = JSON.parse(localStorage.getItem("clickedNames") || "{}");
+    const nameList = document.getElementById("nameList");
+
+    names.forEach(name => {
+      const div = document.createElement("div");
+      div.className = "name";
+
+      if (clickedData[name]) {
+        div.classList.add("clicked");
+        div.style.pointerEvents = "none";
+        div.textContent = `Clicked on: ${clickedData[name]}`;
+      } else {
+        div.textContent = name;
+        div.onclick = function () {
+          const now = new Date();
+          const timestamp = now.toLocaleString();
+
+          clickedData[name] = timestamp;
+          localStorage.setItem("clickedNames", JSON.stringify(clickedData));
+
+          div.classList.add("clicked");
+          div.style.pointerEvents = "none";
+
+          const giftee = assignments[name];
+          div.textContent = `${name} → 🎁 ${giftee}`;
+
+          setTimeout(() => {
+            div.textContent = `Clicked on: ${timestamp}`;
+          }, 5000);
+        };
+      }
+
+      nameList.appendChild(div);
+    });
+  </script>
+</body>
+</html>
